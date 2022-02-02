@@ -1,0 +1,11 @@
+﻿<div class="player" style="@_playerCss"></div>
+
+@code {
+
+    [Parameter] public PlayerModel Model { get; set; }
+
+    string _playerCss => $"left: {Model.DistanceFromLeft}px; " +
+            $"bottom: {Model.DistanceFromGround}px;" +
+            $"background-color: {Model.Color}";
+
+}

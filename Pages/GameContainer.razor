@@ -1,0 +1,57 @@
+﻿@page "/"
+
+<h1>Game</h1>
+
+<div class="game-page">
+    <div class="header">
+        <div class="high-score">High Score: 999</div>
+        <div class="space-to-start">Press Spacebar to Start</div>
+        <div class="score">Score: 75</div>
+    </div>
+
+    <div class="game-container" tabindex="0" @onkeydown="HandleKeyPress">
+        <Player Model="_gameManager.Player" />
+
+    </div>
+
+    <div class="footer">
+        <div class="speed">Timer: @countdown</div>
+        <div class="speed">Speed: 1</div>
+    </div>
+</div>
+
+@code {
+
+    GameManager _gameManager;
+
+    protected override void OnInitialized()
+    {
+        _gameManager = new GameManager();
+        _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
+    }
+
+    void HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Code == "Space")
+        {
+            _gameManager.StartGame();
+        }
+        if (e.Code == "ArrowUp")
+        {
+            _gameManager.MovePlayer("up");
+        }
+        if (e.Code == "ArrowDown")
+        {
+            _gameManager.MovePlayer("down");
+        }
+        if (e.Code == "ArrowLeft")
+        {
+            _gameManager.MovePlayer("left");
+        }
+        if (e.Code == "ArrowRight")
+        {
+            _gameManager.MovePlayer("right");
+        }
+    }
+
+}
