@@ -65,7 +65,7 @@
     bottom: 0px;
 }
 
-.time {
+.timer {
     width: 250px;
     height: 80px;
     border: 3px solid green;
@@ -74,7 +74,7 @@
     bottom: 10px;
 }
 
-.speed {
+.level {
     width: 250px;
     height: 80px;
     border: 3px solid green;

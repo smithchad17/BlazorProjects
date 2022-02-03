@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace game.Models
 {
@@ -10,29 +11,45 @@ namespace game.Models
 
         public PlayerModel Player { get; private set; }
 
-        public TimerModel Timer { get; private set; }
-
         public bool IsRunning { get; private set; } = false;
 
         public event EventHandler MainLoopCompleted;
 
+        public int TimeLeft { get; private set; } = 30;
+
+        public Timer GameTimer;
+
         public GameManager()
         {
             Player = new PlayerModel();
-            Timer = new TimerModel();
+            GameTimer = new Timer();
         }
 
         public async void MainLoop()
         {
             IsRunning = true;
             Player.Color = "green";
+            TimeLeft = 30;
+            GameTimer.Interval = 1000;
+            GameTimer.Elapsed += CountDown;
+            GameTimer.Enabled = true;
 
             while (IsRunning)
             {
                 MoveObjects();
+                DetectCollisions();
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(20);
             }
+            GameOver();
+        }
+
+        public void CountDown(object sender, ElapsedEventArgs e)
+        {
+            if (TimeLeft == 0)
+                IsRunning = false;
+            else
+                TimeLeft -= 1;
         }
 
         public void StartGame()
@@ -40,6 +57,7 @@ namespace game.Models
             if (!IsRunning)
             {
                 Player = new PlayerModel();
+                GameTimer = new Timer();
                 MainLoop();
             }
         }
@@ -65,10 +83,18 @@ namespace game.Models
             
         }
 
+        public void DetectCollisions()
+        {
+            if (Player.HitWall())
+                IsRunning = false;
+        }
+
         public void GameOver()
         {
-            IsRunning = false;
             Player.Color = "red";
+            GameTimer.Dispose();
+            MainLoopCompleted?.Invoke(this, EventArgs.Empty);
+
         }
     }
 

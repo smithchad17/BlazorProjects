@@ -34,5 +34,14 @@ namespace game.Models
         {
             DistanceFromLeft += Speed;
         }
+
+        public bool HitWall()
+        {
+            if (DistanceFromGround <= 8 || DistanceFromGround >= 450 || DistanceFromLeft <= 13 || DistanceFromLeft >= 574)
+                return true;
+            else
+                return false;
+            
+        }
     }
 }
