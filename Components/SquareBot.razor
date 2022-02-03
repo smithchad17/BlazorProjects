@@ -1,0 +1,9 @@
+﻿<div class="square-bot" style="@_squareBotCss"></div>
+
+@code {
+
+    [Parameter] public SquareBotModel Model { get; set; }
+
+    string _squareBotCss => $"left: {Model.FromLeft}px; bottom: {Model.FromGround}px";
+
+}
