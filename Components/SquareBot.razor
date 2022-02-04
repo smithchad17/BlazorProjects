@@ -4,6 +4,7 @@
 
     [Parameter] public SquareBotModel Model { get; set; }
 
-    string _squareBotCss => $"left: {Model.FromLeft}px; bottom: {Model.FromGround}px";
+    string _squareBotCss => $"left: {Model.FromLeft}px; bottom: {Model.FromGround}px;" +
+            $"background-color: black";
 
 }

@@ -11,47 +11,52 @@
 
     <div class="game-container" tabindex="0" @onkeydown="HandleKeyPress">
         <Player Model="_gameManager.Player" />
-
+        @foreach (var bot in _gameManager.SquareBots)
+        {
+            <SquareBot Model="bot" />
+        }
     </div>
 
-    <div class="footer">
+    
+
+    <div class=" footer">
         <div class="timer">Time: @_gameManager.TimeLeft</div>
         <div class="level">Level: 1</div>
     </div>
 </div>
 
-@code {
+    @code {
 
-    GameManager _gameManager;
+        GameManager _gameManager;
 
-    protected override void OnInitialized()
-    {
-        _gameManager = new GameManager();
-        _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
+        protected override void OnInitialized()
+        {
+            _gameManager = new GameManager();
+            _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
+        }
+
+        void HandleKeyPress(KeyboardEventArgs e)
+        {
+            if (e.Code == "Space")
+            {
+                _gameManager.StartGame();
+            }
+            if (e.Code == "ArrowUp")
+            {
+                _gameManager.MovePlayer("up");
+            }
+            if (e.Code == "ArrowDown")
+            {
+                _gameManager.MovePlayer("down");
+            }
+            if (e.Code == "ArrowLeft")
+            {
+                _gameManager.MovePlayer("left");
+            }
+            if (e.Code == "ArrowRight")
+            {
+                _gameManager.MovePlayer("right");
+            }
+        }
+
     }
-
-    void HandleKeyPress(KeyboardEventArgs e)
-    {
-        if (e.Code == "Space")
-        {
-            _gameManager.StartGame();
-        }
-        if (e.Code == "ArrowUp")
-        {
-            _gameManager.MovePlayer("up");
-        }
-        if (e.Code == "ArrowDown")
-        {
-            _gameManager.MovePlayer("down");
-        }
-        if (e.Code == "ArrowLeft")
-        {
-            _gameManager.MovePlayer("left");
-        }
-        if (e.Code == "ArrowRight")
-        {
-            _gameManager.MovePlayer("right");
-        }
-    }
-
-}

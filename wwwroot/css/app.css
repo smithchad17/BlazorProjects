@@ -23,6 +23,12 @@
     position: absolute;
 }
 
+.square-bot{
+    height: 35px;
+    width: 35px;
+    position: absolute;
+}
+
 .header {
     width: 600px;
     height: 100px;

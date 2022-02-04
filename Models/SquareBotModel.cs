@@ -13,47 +13,66 @@ namespace game.Models
 
         public string Color { get; set; } = "black";
 
-        public int Speed { get; private set; } = 15;
+        public int Speed { get; private set; } = 5;
 
-        private bool IsLeft { get; set; }
-
-        private bool IsBottom { get; set; }
+        public string Direction { get; set; }
 
         public SquareBotModel()
         {
             GetPosition();
         }
 
-        private void StartingPosition()
+        public void GetPosition() {
+            
+            int pick = new Random().Next(0, 4);
+
+             switch (pick)
+            {
+                case 0: //left side
+                    FromLeft = -40;
+                    FromGround = new Random().Next(10, 460);
+                    Direction = "right";
+                    break;
+                case 1: //top
+                    FromLeft = new Random().Next(0, 560);
+                    FromGround = 500;
+                    Direction = "down";
+                    break;
+                case 2: //right side
+                    FromLeft = 610;
+                    FromGround = new Random().Next(10, 460);
+                    Direction = "left";
+                    break;
+                case 3: //bottom
+                    FromLeft = new Random().Next(0, 560);
+                    FromGround = -40;
+                    Direction = "up";
+                    break;
+            }
+        }
+         
+        public void Move()
         {
-            int x = new Random().Next(0, 2);
-            int y = new Random().Next(0, 2);
-
-            if (x == 0)
-                IsLeft = true;
-            else
-                IsLeft = false;
-
-            if (y == 0)
-                IsBottom = true;
-            else
-                IsBottom = false;
+             if (Direction == "right")
+                FromLeft += Speed;
+            if (Direction == "left")
+                FromLeft -= Speed;
+            if (Direction == "up")
+                FromGround += Speed;
+            if (Direction == "down")
+                FromGround -= Speed;
         }
 
-
-        public void GetPosition()
+        public bool IsOffScreen()
         {
-            StartingPosition();
-
-            if (IsLeft)
-                FromLeft = new Random().Next(-30, 0);
+            if (FromLeft <= -50 || FromLeft >= 650)
+                return true;
+            if (FromGround <= -50 || FromGround >= 550)
+                return true;
             else
-                FromLeft = new Random().Next(600, 650);
-
-            if (IsBottom)
-                FromGround = new Random().Next(500, 550);
-            else
-                FromGround = new Random().Next(50, 100);
+                return false;
         }
+
+       
     }
 }
