@@ -11,6 +11,8 @@ namespace game.Models
 
         public PlayerModel Player { get; private set; }
 
+        public List<SquareBotModel> SquareBots { get; private set; }
+
         public bool IsRunning { get; private set; } = false;
 
         public event EventHandler MainLoopCompleted;
@@ -22,6 +24,7 @@ namespace game.Models
         public GameManager()
         {
             Player = new PlayerModel();
+            SquareBots = new List<SquareBotModel>();
             GameTimer = new Timer();
         }
 
@@ -36,6 +39,7 @@ namespace game.Models
 
             while (IsRunning)
             {
+                ManageBots();
                 MoveObjects();
                 DetectCollisions();
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
@@ -80,19 +84,51 @@ namespace game.Models
 
         public void MoveObjects()
         {
+            foreach(var bot in SquareBots)
+            {
+                bot.Move();
+            }
             
+        }
+
+        public void ManageBots()
+        {
+            if (!SquareBots.Any())
+            {
+                SquareBots.Add(new SquareBotModel());
+            }
+
+            if (SquareBots.First().IsOffScreen())
+                SquareBots.Remove(SquareBots.First());
+                
         }
 
         public void DetectCollisions()
         {
             if (Player.HitWall())
                 IsRunning = false;
+
+            foreach (var bot in SquareBots)
+            {
+                if ((Player.DistanceFromGround <= bot.FromGround + 35 && Player.DistanceFromGround >= bot.FromGround) &&
+                    (Player.DistanceFromLeft >= bot.FromLeft && Player.DistanceFromLeft <= bot.FromLeft +35))
+                {
+                    IsRunning = false;
+                }
+
+                if ((Player.DistanceFromGround + 26 >= bot.FromGround && Player.DistanceFromGround + 26 <= bot.FromGround + 35) &&
+                    (Player.DistanceFromLeft + 26 >= bot.FromLeft && Player.DistanceFromLeft + 26 <= bot.FromLeft + 35))
+                {
+                    IsRunning = false;
+                }
+            }
         }
 
         public void GameOver()
         {
             Player.Color = "red";
             GameTimer.Dispose();
+            SquareBots.Clear();
             MainLoopCompleted?.Invoke(this, EventArgs.Empty);
 
         }

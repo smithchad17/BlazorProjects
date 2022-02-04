@@ -2,21 +2,29 @@
 
 <h1>Game</h1>
 
+<div class="right-border"></div>
+<div class="left-border"></div>
+
 <div class="game-page">
     <div class="header">
-        <div class="high-score">High Score: 999</div>
-        <div class="space-to-start">Press Spacebar to Start</div>
-        <div class="score">Score: 75</div>
+        <div class="high-score"><b>High Score: 999</b></div>
+        <div class="space-to-start"><b>Press Spacebar to Start</b></div>
+        <div class="score"><b>Score: 75</b></div>
     </div>
 
     <div class="game-container" tabindex="0" @onkeydown="HandleKeyPress">
         <Player Model="_gameManager.Player" />
-
+        @foreach (var bot in _gameManager.SquareBots)
+        {
+            <SquareBot Model="bot" />
+        }
     </div>
 
-    <div class="footer">
-        <div class="timer">Time: @_gameManager.TimeLeft</div>
-        <div class="level">Level: 1</div>
+
+
+    <div class=" footer">
+        <div class="timer"><b>Time: @_gameManager.TimeLeft</b></div>
+        <div class="level"><b>Level: 1</b></div>
     </div>
 </div>
 
