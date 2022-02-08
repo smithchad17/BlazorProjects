@@ -51,16 +51,16 @@ namespace game.Models
             }
         }
          
-        public void Move()
+        public void Move(int speed)
         {
              if (Direction == "right")
-                FromLeft += Speed;
+                FromLeft += speed;
             if (Direction == "left")
-                FromLeft -= Speed;
+                FromLeft -= speed;
             if (Direction == "up")
-                FromGround += Speed;
+                FromGround += speed;
             if (Direction == "down")
-                FromGround -= Speed;
+                FromGround -= speed;
         }
 
         public bool IsOffScreen()

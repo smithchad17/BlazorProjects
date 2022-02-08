@@ -23,9 +23,15 @@ namespace game.Models
 
         public int GameLevel { get; private set; } = 0;
 
+        public int GameSpeed { get; set; }
+
+        public double GameTimeInterval { get; set; } = 750;
+
         public string ButtonText { get; set; } = "Click To Start";
 
         public Timer GameTimer;
+
+        public Timer BotTimer;
 
         public GameManager()
         {
@@ -35,30 +41,35 @@ namespace game.Models
             GameTimer.Interval = 1000;
             GameTimer.Elapsed += CountDown;
             GameTimer.Enabled = true;
+            BotTimer = new Timer();
+            BotTimer.Interval = GameTimeInterval;
+            BotTimer.Elapsed += ManageBots;
+            BotTimer.Enabled = true;
         }
 
         public async void MainLoop()
         {
             IsRunning = true;
             Player.Color = "green";
-            TimeLeft = 5;
+            TimeLeft = 10;
             GameLevel += 1;
 
             while (IsRunning)
             {
-                ButtonText = "Running";
-                ManageBots();
-                MoveObjects();
-                DetectCollisions();
+               ButtonText = "Running";
+               if (!SquareBots.Any())
+                {
+                    GameSpeed = 5;
+                }
+                else
+                {
+                    MoveObjects();
+                    DetectCollisions();
+                }
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(20);
             }
-            if (TimeLeft == 0)
-            {
-                NextLevel();
-            }
-            else
-                GameOver();
+            //NextLevel();
         }
 
         public void CountDown(object sender, ElapsedEventArgs e)
@@ -79,6 +90,7 @@ namespace game.Models
             {                
                 Player = new PlayerModel();
                 GameTimer = new Timer();
+                BotTimer = new Timer();
                 MainLoop();
             }
         }
@@ -103,31 +115,36 @@ namespace game.Models
         {
             foreach(var bot in SquareBots)
             {
-                bot.Move();
+                bot.Move(GameSpeed);
             }
             
         }
 
-        public void ManageBots()
+        public void ManageBots(object sender, ElapsedEventArgs e)
         {
-            if (!SquareBots.Any())
+            if (GameLevel > 1)
             {
-                SquareBots.Add(new SquareBotModel());
+                if (SquareBots.Count() < GameLevel + 1)
+                    SquareBots.Add(new SquareBotModel());
             }
-
-            if (SquareBots.First().IsOffScreen())
+            else 
             {
-                Score();
-                SquareBots.Remove(SquareBots.First());
-            }
-                
+                if (!SquareBots.Any())
+                    SquareBots.Add(new SquareBotModel());
+            } 
                 
         }
 
         public void DetectCollisions()
         {
             if (Player.HitWall())
-                IsRunning = false;
+                GameOver();
+
+            if (SquareBots.First().IsOffScreen())
+            {
+                Score();
+                SquareBots.Remove(SquareBots.First());
+            }
 
             List<int> xPlayer = Enumerable.Range(Player.DistanceFromLeft, 25).ToList();
             List<int> yPlayer = Enumerable.Range(Player.DistanceFromGround, 25).ToList();
@@ -139,8 +156,9 @@ namespace game.Models
 
                 if (xPlayer.Intersect(xBot).Count() > 0 && yPlayer.Intersect(yBot).Count() > 0)
                 {
-                    IsRunning = false;
+                    GameOver();
                 }
+                
             }
         }
 
@@ -151,6 +169,12 @@ namespace game.Models
 
         public void NextLevel()
         {
+            GameTimeInterval = GameTimeInterval / 2;
+
+            if (GameLevel > 1 && GameLevel%2 == 1)
+            {
+                GameSpeed += 2;
+            }
             ButtonText = "Click For Next Level";
             MainLoopCompleted?.Invoke(this, EventArgs.Empty);
             IsRunning = false;
@@ -160,10 +184,13 @@ namespace game.Models
         {
             Player.Color = "red";
             GameTimer.Dispose();
+            BotTimer.Dispose();
             ButtonText = "Click To Start";
             GameLevel = 0;
             GameScore = 0;
+            GameSpeed = 5;
             MainLoopCompleted?.Invoke(this, EventArgs.Empty);
+            IsRunning = false;
 
         }
     }
