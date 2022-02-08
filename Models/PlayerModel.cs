@@ -37,7 +37,7 @@ namespace game.Models
 
         public bool HitWall()
         {
-            if (DistanceFromGround <= 8 || DistanceFromGround >= 450 || DistanceFromLeft <= 13 || DistanceFromLeft >= 574)
+            if (DistanceFromGround <= 0 || DistanceFromGround >= 475 || DistanceFromLeft <= 0 || DistanceFromLeft >= 574)
                 return true;
             else
                 return false;

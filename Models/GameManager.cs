@@ -108,16 +108,15 @@ namespace game.Models
             if (Player.HitWall())
                 IsRunning = false;
 
+            List<int> xPlayer = Enumerable.Range(Player.DistanceFromLeft, 25).ToList();
+            List<int> yPlayer = Enumerable.Range(Player.DistanceFromGround, 25).ToList();
+
             foreach (var bot in SquareBots)
             {
-                if ((Player.DistanceFromGround <= bot.FromGround + 35 && Player.DistanceFromGround >= bot.FromGround) &&
-                    (Player.DistanceFromLeft >= bot.FromLeft && Player.DistanceFromLeft <= bot.FromLeft +35))
-                {
-                    IsRunning = false;
-                }
+                List<int> xBot = Enumerable.Range(bot.FromLeft, 35).ToList();
+                List<int> yBot = Enumerable.Range(bot.FromGround, 35).ToList();
 
-                if ((Player.DistanceFromGround + 26 >= bot.FromGround && Player.DistanceFromGround + 26 <= bot.FromGround + 35) &&
-                    (Player.DistanceFromLeft + 26 >= bot.FromLeft && Player.DistanceFromLeft + 26 <= bot.FromLeft + 35))
+                if (xPlayer.Intersect(xBot).Count() > 0 && yPlayer.Intersect(yBot).Count() > 0)
                 {
                     IsRunning = false;
                 }
