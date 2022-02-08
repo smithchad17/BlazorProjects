@@ -58,32 +58,30 @@
 }
 
 .high-score {
-    padding: 25px 0;
     margin: auto;
     width: 30%;
-    height: 30px;
+    height: 90%;
     background-color: #71a3a5;
     position: absolute;
     text-align: center;
     float: left;
 }
 
-.space-to-start {
-    padding: 25px 0;
+.click-to-start {
     margin: auto;
     width: 32%;
-    height: 30px;
+    height: 90%;
     position: absolute;
-    background-color: #71a3a5;
+    background-color: #4CAF50;
     left: 200px;
     text-align: center;
+    font: 16px;
 }
 
 .score {
-    padding: 25px 0;
     margin: auto;
     width: 30%;
-    height: 30px;
+    height: 90%;
     background-color: #71a3a5;
     position: absolute;
     left: 407px;

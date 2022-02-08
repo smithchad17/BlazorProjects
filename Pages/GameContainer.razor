@@ -5,14 +5,14 @@
 <div class="right-border"></div>
 <div class="left-border"></div>
 
-<div class="game-page">
+<div class="game-page" @onkeydown="HandleKeyPress">
     <div class="header">
         <div class="high-score"><b>High Score: 999</b></div>
-        <div class="space-to-start"><b>Press Spacebar to Start</b></div>
-        <div class="score"><b>Score: 75</b></div>
+        <button class="click-to-start" @onclick="HandleStartGame">@_gameManager.ButtonText</button>
+        <div class="score"><b>Score: @_gameManager.GameScore</b></div>
     </div>
 
-    <div class="game-container" tabindex="0" @onkeydown="HandleKeyPress">
+    <div class="game-container" tabindex="0" >
         <Player Model="_gameManager.Player" />
         @foreach (var bot in _gameManager.SquareBots)
         {
@@ -24,7 +24,7 @@
 
     <div class=" footer">
         <div class="timer"><b>Time: @_gameManager.TimeLeft</b></div>
-        <div class="level"><b>Level: 1</b></div>
+        <div class="level"><b>Level: @_gameManager.GameLevel</b></div>
     </div>
 </div>
 
@@ -38,12 +38,13 @@
             _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
         }
 
+        void HandleStartGame()
+        {
+            _gameManager.StartGame();
+        }
+
         void HandleKeyPress(KeyboardEventArgs e)
         {
-            if (e.Code == "Space")
-            {
-                _gameManager.StartGame();
-            }
             if (e.Code == "ArrowUp")
             {
                 _gameManager.MovePlayer("up");

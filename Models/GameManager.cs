@@ -17,7 +17,13 @@ namespace game.Models
 
         public event EventHandler MainLoopCompleted;
 
-        public int TimeLeft { get; private set; } = 30;
+        public int TimeLeft { get; private set; } 
+
+        public int GameScore { get; private set; } = 0;
+
+        public int GameLevel { get; private set; } = 0;
+
+        public string ButtonText { get; set; } = "Click To Start";
 
         public Timer GameTimer;
 
@@ -26,40 +32,51 @@ namespace game.Models
             Player = new PlayerModel();
             SquareBots = new List<SquareBotModel>();
             GameTimer = new Timer();
+            GameTimer.Interval = 1000;
+            GameTimer.Elapsed += CountDown;
+            GameTimer.Enabled = true;
         }
 
         public async void MainLoop()
         {
             IsRunning = true;
             Player.Color = "green";
-            TimeLeft = 30;
-            GameTimer.Interval = 1000;
-            GameTimer.Elapsed += CountDown;
-            GameTimer.Enabled = true;
+            TimeLeft = 5;
+            GameLevel += 1;
 
             while (IsRunning)
             {
+                ButtonText = "Running";
                 ManageBots();
                 MoveObjects();
                 DetectCollisions();
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(20);
             }
-            GameOver();
+            if (TimeLeft == 0)
+            {
+                NextLevel();
+            }
+            else
+                GameOver();
         }
 
         public void CountDown(object sender, ElapsedEventArgs e)
         {
             if (TimeLeft == 0)
-                IsRunning = false;
+            {   
+                if (ButtonText != "Click To Start")
+                    NextLevel();
+            }
             else
                 TimeLeft -= 1;
         }
 
         public void StartGame()
         {
+            SquareBots.Clear();
             if (!IsRunning)
-            {
+            {                
                 Player = new PlayerModel();
                 GameTimer = new Timer();
                 MainLoop();
@@ -99,7 +116,11 @@ namespace game.Models
             }
 
             if (SquareBots.First().IsOffScreen())
+            {
+                Score();
                 SquareBots.Remove(SquareBots.First());
+            }
+                
                 
         }
 
@@ -123,11 +144,25 @@ namespace game.Models
             }
         }
 
+        public void Score()
+        {
+            GameScore += 5;
+        }
+
+        public void NextLevel()
+        {
+            ButtonText = "Click For Next Level";
+            MainLoopCompleted?.Invoke(this, EventArgs.Empty);
+            IsRunning = false;
+        }
+
         public void GameOver()
         {
             Player.Color = "red";
             GameTimer.Dispose();
-            SquareBots.Clear();
+            ButtonText = "Click To Start";
+            GameLevel = 0;
+            GameScore = 0;
             MainLoopCompleted?.Invoke(this, EventArgs.Empty);
 
         }
