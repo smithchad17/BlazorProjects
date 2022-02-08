@@ -2,56 +2,65 @@
 
 <h1>Game</h1>
 
-<div class="game-page">
+<div class="right-border"></div>
+<div class="left-border"></div>
+
+<div class="game-page" @onkeydown="HandleKeyPress">
     <div class="header">
-        <div class="high-score">High Score: 999</div>
-        <div class="space-to-start">Press Spacebar to Start</div>
-        <div class="score">Score: 75</div>
+        <div class="high-score"><b>High Score: 999</b></div>
+        <button class="click-to-start" @onclick="HandleStartGame">@_gameManager.ButtonText</button>
+        <div class="score"><b>Score: @_gameManager.GameScore</b></div>
     </div>
 
-    <div class="game-container" tabindex="0" @onkeydown="HandleKeyPress">
+    <div class="game-container" tabindex="0" >
         <Player Model="_gameManager.Player" />
-
+        @foreach (var bot in _gameManager.SquareBots)
+        {
+            <SquareBot Model="bot" />
+        }
     </div>
 
-    <div class="footer">
-        <div class="timer">Time: @_gameManager.TimeLeft</div>
-        <div class="level">Level: 1</div>
+
+
+    <div class=" footer">
+        <div class="timer"><b>Time: @_gameManager.TimeLeft</b></div>
+        <div class="level"><b>Level: @_gameManager.GameLevel</b></div>
     </div>
 </div>
 
-@code {
+    @code {
 
-    GameManager _gameManager;
+        GameManager _gameManager;
 
-    protected override void OnInitialized()
-    {
-        _gameManager = new GameManager();
-        _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
-    }
+        protected override void OnInitialized()
+        {
+            _gameManager = new GameManager();
+            _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
+        }
 
-    void HandleKeyPress(KeyboardEventArgs e)
-    {
-        if (e.Code == "Space")
+        void HandleStartGame()
         {
             _gameManager.StartGame();
         }
-        if (e.Code == "ArrowUp")
-        {
-            _gameManager.MovePlayer("up");
-        }
-        if (e.Code == "ArrowDown")
-        {
-            _gameManager.MovePlayer("down");
-        }
-        if (e.Code == "ArrowLeft")
-        {
-            _gameManager.MovePlayer("left");
-        }
-        if (e.Code == "ArrowRight")
-        {
-            _gameManager.MovePlayer("right");
-        }
-    }
 
-}
+        void HandleKeyPress(KeyboardEventArgs e)
+        {
+            if (e.Code == "ArrowUp")
+            {
+                _gameManager.MovePlayer("up");
+            }
+            if (e.Code == "ArrowDown")
+            {
+                _gameManager.MovePlayer("down");
+            }
+            if (e.Code == "ArrowLeft")
+            {
+                _gameManager.MovePlayer("left");
+            }
+            if (e.Code == "ArrowRight")
+            {
+                _gameManager.MovePlayer("right");
+            }
+        }
+
+    }
